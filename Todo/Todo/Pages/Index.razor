@@ -1,0 +1,14 @@
+﻿@page "/"
+
+<h1>Todo</h1>
+
+<TodoList Todos="@todos" />
+
+@code {
+    IList<TodoItemModel> todos = new List<TodoItemModel>
+    {
+        new TodoItemModel { Text = "Watch videos about Blazor" },
+        new TodoItemModel { Text = "Create own Blazor app" },
+        new TodoItemModel { Text = "Blazor is awesome framework" }
+    };
+}
