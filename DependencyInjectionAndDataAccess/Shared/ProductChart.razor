@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JS
+
+<div @ref="chart"></div>
+
+@code {
+    [Parameter]
+    public List<Product> Data { get; set; }
+
+    ElementReference chart;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("initProductChart", chart, Data, DotNetObjectReference.Create(this));
+    }
+
+    [Parameter]
+    public Action<int> OnChartPointClicked { get; set; }
+
+    [JSInvokable]
+    public void ChartPointClicked(int id)
+    {
+        this.OnChartPointClicked?.Invoke(id);
+    }
+}

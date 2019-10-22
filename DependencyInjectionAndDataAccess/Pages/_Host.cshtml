@@ -1,0 +1,62 @@
+﻿@page "/"
+@namespace DependencyInjectionAndDataAccess.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DI & Data Access</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="//cdn3.devexpress.com/jslib/19.1.5/css/dx.common.css" />
+    <link href="//cdn3.devexpress.com/jslib/19.1.5/css/dx.light.css" />
+
+    <script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="//cdn3.devexpress.com/jslib/19.1.5/js/dx.viz.js"></script>
+</head>
+<body>
+    <app>
+        @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
+    </app>
+    <script>
+        initProductChart = (chartElement, data, component) => {
+            $(chartElement).dxChart({
+                dataSource: data,
+                commonSeriesSettings: {
+                    argumentField: 'name',
+                    type: 'bar'
+                },
+                argumentAxis: {
+                    label: {
+                        displayMode: 'rotate',
+                        rotationMode: 270
+                    }
+                },
+                valueAxis: [
+                    { name: 'PriceAxis', title: 'Price' },
+                    { name: 'RatingAxis', title: 'Rating', position: 'right' }
+                ],
+                series: [
+                    {
+                        valueField: 'price',
+                        axis: 'PriceAxis',
+                        name: 'Price'
+                    },
+                    {
+                        valueField: 'rating',
+                        axis: 'ratingAxis',
+                        name: 'Rating'
+                    }
+                ],
+                onPointClick: ({ target }) => {
+                    component.invokeMethodAsync('ChartPointClicked', target.data.id)
+                }
+            })
+        }
+    </script>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

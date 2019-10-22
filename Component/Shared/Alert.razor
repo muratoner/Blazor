@@ -1,0 +1,33 @@
+﻿<p class="alert alert-@AlertCssClass">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <h4 class="alert-heading">@Title</h4>
+    }
+    @ChildContent
+</p>
+
+@code {
+
+    [Parameter]
+    public AlertType Type { get; set; } = AlertType.Dark;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    public enum AlertType
+    {
+        Danger,
+        Warning,
+        Info,
+        Success,
+        Dark,
+        Light,
+        Primary,
+        Secondary
+    }
+
+    public string AlertCssClass => Type.ToString().ToLower();
+}

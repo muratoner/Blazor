@@ -1,0 +1,86 @@
+﻿@page "/dataTransformer"
+
+@inject IJSRuntime JS
+
+<div class="card my-3">
+    <h5 class="card-header">Data Transformer</h5>
+    <div class="card-body">
+        <pre>
+            new Country
+            {
+                CountryName = "TR",
+                Cities = new City[]
+                {
+                    new City
+                    {
+                        CityName = "İstanbul",
+                        Population = 80000000
+                    },
+                    new City
+                    {
+                        CityName = "Kocaeli",
+                        Population = 4000000
+                    },
+                    new City
+                    {
+                        CityName = "Van",
+                        Population = 1000000
+                    }
+                }
+            },
+            new Country
+            {
+                CountryName = "UK",
+                Cities = new []
+                {
+                    new City
+                    {
+                        CityName = "London",
+                        Population = 7556900
+                    },
+                    new City
+                    {
+                        CityName = "Edinburgh",
+                        Population = 464990
+                    }
+                }
+            }
+            };
+        </pre>
+        <button @onclick=TransformData>Transform data from client</button>
+    </div>
+    @if (TransformResult != null)
+    {
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Population</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in TransformResult)
+                    {
+                        <tr>
+                            <td>@row.CountryName</td>
+                            <td>@row.CityName</td>
+                            <td>@row.Population</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    List<TransformResult> TransformResult { get; set; }
+
+    async void TransformData()
+    {
+        TransformResult = await JS.InvokeAsync<List<TransformResult>>("transformData", DemoData.Data);
+        StateHasChanged();
+    }
+}

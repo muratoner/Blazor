@@ -1,40 +1,48 @@
-﻿<div class="input-group input-group-lg">
-    <div class="input-group-prepend">
-        <span class="input-group-text">New Todo Item</span>
+﻿<EditForm Model="Model">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="input-group input-group-lg">
+        <div class="input-group-prepend">
+            <span class="input-group-text">New Todo Item</span>
+        </div>
+        <input type="text"
+               class="form-control"
+               placeholder="Enter you text here"
+               @bind-value="Model.Text"
+               @bind-value:event="oninput"/>
+        @*<InputText @bind-Value="Model.Text" />*@
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-secondary @buttonDisabled">
+                @(Model.Guid == Guid.Empty ? "Add" : "Update") (Enter)
+            </button>
+        </div>
     </div>
-    <input type="text" 
-           class="form-control" 
-           placeholder="Enter you text here" 
-           @bind-value="Text" 
-           @bind-value:event="oninput"
-           @onkeypress="KeyPress"/>
-    <div class="input-group-append">
-        <button class="btn btn-secondary @buttonDisabled" @onclick="NewItem">Add (Enter)</button>
-    </div>
-</div>
+    <ValidationMessage For="() => Model.Text" />
+    <BootstrapInvalidFeedback For="@(() => Model.Text)" />
+</EditForm>
 
 @code {
-    string Text { get; set; }
+    [Parameter]
+    public TodoItemModel Model { get; set; }
 
-    string buttonDisabled => Text != null && Text.Length > 0 ? null : "disabled";
+    string buttonDisabled => Model.Text != null && Model.Text.Length > 0 ? null : "disabled";
 
     [Parameter]
-    public Action<string> OnNewItem { get; set; }
+    public Action<TodoItemModel> OnNewItem { get; set; }
 
     void NewItem()
     {
         if (OnNewItem != null)
         {
-            OnNewItem(Text);
-            Text = "";
+            OnNewItem(Model);
         }
     }
 
-    void KeyPress(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter")
-        {
-            NewItem();
-        }
-    }
+    //void KeyPress(KeyboardEventArgs e)
+    //{
+    //    if (e.Key == "Enter")
+    //    {
+    //        NewItem();
+    //    }
+    //}
 }

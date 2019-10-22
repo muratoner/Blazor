@@ -7,8 +7,8 @@
 @code {
     IList<TodoItemModel> todos = new List<TodoItemModel>
     {
-        new TodoItemModel { Text = "Watch videos about Blazor" },
-        new TodoItemModel { Text = "Create own Blazor app" },
-        new TodoItemModel { Text = "Blazor is awesome framework" }
+        new TodoItemModel { Text = "Watch videos about Blazor", Guid = Guid.NewGuid() },
+        new TodoItemModel { Text = "Create own Blazor app", Guid = Guid.NewGuid() },
+        new TodoItemModel { Text = "Blazor is awesome framework", Guid = Guid.NewGuid() }
     };
 }

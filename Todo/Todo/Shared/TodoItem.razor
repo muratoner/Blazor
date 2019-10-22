@@ -1,18 +1,33 @@
 ﻿<tr class="todo @rowClass">
     <td class="text-center">
-        <input type="checkbox" @bind="Done"/>
+        <input type="checkbox" @bind="Model.Done"/>
     </td>
-    <td class="@textClass">@Text</td>
+    <td class="@textClass">@Model.Text</td>
+    <td>
+        <a class="btn btn-primary" @onclick="OnEditClick">
+            <i class=""></i> Edit
+        </a>
+        <a class="btn btn-danger" @onclick="OnDeleteClick">
+            <i class=""></i> Delete
+        </a>
+    </td>
 </tr>
 
 
 @code {
     [Parameter]
-    public string Text { get; set; }
+    public TodoItemModel Model { get; set; }
 
     [Parameter]
-    public bool Done { get; set; }
+    public Action<TodoItemModel> OnDelete { get; set; }
 
-    string textClass => Done ? "done text-muted" : null;
-    string rowClass => Done ? "table-secondary" : null;
+    [Parameter]
+    public Action<TodoItemModel> OnEdit { get; set; }
+
+    void OnDeleteClick() => OnDelete?.Invoke(Model);
+
+    void OnEditClick() => OnEdit?.Invoke(Model);
+
+    string textClass => Model.Done ? "done text-muted" : null;
+    string rowClass => Model.Done ? "table-secondary" : null;
 }

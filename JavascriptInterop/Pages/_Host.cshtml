@@ -1,0 +1,59 @@
+﻿@page "/"
+@namespace JavascriptInterop.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavascriptInterop</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>
+        @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.min.js"></script>
+    <script src="//cdn.jsdelivr.net/data-transformer/0.1.12/data-transformer-browser.min.js"></script>
+    <script type="text/javascript">
+        debugOut = (content, userDir = true, prefix = "") => {
+            if (userDir) {
+                if (prefix) console.log(prefix)
+                console.dir(content)
+            } else {
+                console.log((prefix ? `${prefix}: ` : '') + JSON.stringify(content))
+            }
+            return true
+        }
+
+        window.getTheAnswer = () => {
+            return {
+                description: 'The answer to life, the universe and everything',
+                value: 42
+            }
+        }
+
+        transformData = data => Array.from(dataTransformer.flattenOneToN(data))
+
+        //setInterval(() => {
+        //    DotNet.invokeMethodAsync('JavascriptInterop', 'GetCurrentTimeAsync').then(res => {
+        //        console.log("Current time from .NET", res)
+        //    })
+        //}, 3000)
+
+        requestJsCallback = callbackReceiver => {
+            console.log(callbackReceiver)
+            setTimeout(() => {
+                callbackReceiver.invokeMethodAsync('Callback');
+            }, 1000)
+            return true;
+        }
+    </script>
+</body>
+</html>

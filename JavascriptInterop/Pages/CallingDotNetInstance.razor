@@ -1,0 +1,26 @@
+﻿@page "/callingDotNetInstance"
+
+@inject IJSRuntime JS
+
+<div class="card my-3">
+    <h5 class="card-header">Calling a .NET instance</h5>
+    <div class="card-body">
+        <button @onclick=RequestJsCallback>Request JS Callback</button>
+    </div>
+</div>
+
+@code {
+
+    [JSInvokable]
+    public async Task<bool> Callback()
+    {
+        Console.WriteLine("Received the callback from Javascript.");
+        return await Task.FromResult(true);
+    }
+
+    void RequestJsCallback()
+    {
+        Console.WriteLine("Requesting Javascript callback");
+        JS.InvokeAsync<bool>("requestJsCallback", DotNetObjectReference.Create(this));
+    }
+}

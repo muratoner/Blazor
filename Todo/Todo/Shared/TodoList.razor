@@ -3,27 +3,51 @@
         <tr>
             <th class="text-center" style="width: 10%">Done</th>
             <th>To do</th>
+            <th style="width: 156px"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var todo in Todos)
         {
-            <TodoItem Text="@todo.Text" Done="@todo.Done" />
+            <TodoItem Model=@todo OnEdit="OnEdit" OnDelete="OnDelete" />
         }
     </tbody>
 </table>
 
-<NewItemEntry OnNewItem="OnNewItem" />
+<NewItemEntry Model="Model" OnNewItem="OnNewItem" />
 
 @code {
+    public TodoItemModel Model { get; set; } = new TodoItemModel();
+
     [Parameter]
     public IList<TodoItemModel> Todos { get; set; }
 
-    void OnNewItem(string newItemText)
+    void OnDelete(TodoItemModel todoItem)
+    {
+        Todos.Remove(todoItem);
+        StateHasChanged();
+    }
+
+    void OnEdit(TodoItemModel item)
+    {
+        Model = item;
+        StateHasChanged();
+    }
+
+    void OnNewItem(TodoItemModel item)
     {
         if (Todos != null)
         {
-            Todos.Add(new TodoItemModel { Text = newItemText });
+            if (item.Guid != Guid.Empty)
+            {
+                var res = Todos.ElementAt(Todos.IndexOf(item));
+                res.Guid = Guid.NewGuid();
+            }
+            else
+            {
+                Todos.Add(item);
+            }
+            Model = new TodoItemModel();
             StateHasChanged();
         }
     }

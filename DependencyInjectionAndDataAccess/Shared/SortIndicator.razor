@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Components
+@if (SortField == Field)
+{
+    <span class="px-3 text-primary oi @ArrowClass"></span>
+}
+
+@code {
+    [Parameter]
+    public string Field { get; set; }
+    [Parameter]
+    public string SortField { get; set; }
+    [Parameter]
+    public bool IsAsc { get; set; }
+
+    string ArrowClass => IsAsc ? "oi-arrow-thick-top" : "oi-arrow-thick-bottom";
+}

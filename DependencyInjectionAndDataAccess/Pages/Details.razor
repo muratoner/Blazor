@@ -1,0 +1,42 @@
+﻿@page "/product/detail/{Id:int}"
+
+@inject IDataLayer DataLayer
+
+<form>
+    <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" class="form-control" readonly="readonly" id="id" value=@Product.ID>
+    </div>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" readonly="readonly" id="name" value=@Product.Name>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" class="form-control" readonly="readonly" id="description" value=@Product.Description>
+    </div>
+    <div class="form-group">
+        <label for="releaseDate">Release Date</label>
+        <input type="text" class="form-control" readonly="readonly" id="releaseDate" value=@Product.ReleaseDate>
+    </div>
+    <div class="form-group">
+        <label for="rating">Rating</label>
+        <input type="text" class="form-control" readonly="readonly" id="rating" value=@Product.Rating>
+    </div>
+    <div class="form-group">
+        <label for="price">Price</label>
+        <input type="text" class="form-control" readonly="readonly" id="price" value=@Product.Price>
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public Product Product { get; set; } = new Product();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Product = await DataLayer.GetProductById(Id);
+    }
+}

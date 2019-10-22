@@ -1,0 +1,103 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components
+
+@inject IDataLayer DataLayer
+
+@{
+    RenderFragment ColumHeader(string field, string caption)
+    {
+        return @<th @onclick=@( async () => await HeaderClick(field))>
+            @(new MarkupString(caption).Value) <SortIndicator Field=@field SortField=@SortField IsAsc=@IsAsc/>
+        </th>;
+    }
+}
+
+@if (Products != null)
+{
+    <h4>Showing top 10 countries sorted by "@SortField", @(IsAsc ? "ascending" : "descending").</h4>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-7">
+                <table class="table table-bordered table-dark table-hover table-striped">
+                    <thead>
+                    <tr>
+                        @ColumHeader("ID", "ID")
+                        @ColumHeader("Name", "Name")
+                        @ColumHeader("Description", "Description")
+                        @ColumHeader("ReleaseDate", "ReleaseDate")
+                        @ColumHeader("Rating", "Rating")
+                        @ColumHeader("Price", "Price")
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var product in Products)
+                    {
+                        <tr class="@FocusedRowCssClass(product.ID)">
+                            <td>@product.ID</td>
+                            <td>@product.Name</td>
+                            <td>@product.Description</td>
+                            <td>@product.ReleaseDate.ToString("MM/dd/yyyy")</td>
+                            <td>@product.Rating</td>
+                            <td>@product.Price.ToString("c")</td>
+                            <td>
+                                <a href="/product/detail/@product.ID" class="btn btn-primary">
+                                    <i class="oi oi-eyes"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-5">
+                <ProductChart Data=@Products OnChartPointClicked="ChartPointClicked" />
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading country data...</p>
+}
+
+@code {
+    List<Product> Products { get; set; }
+
+    string SortField { get; set; } = "Name";
+
+    bool IsAsc { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        Products = await DataLayer.FetchProductsAsync(SortField, IsAsc);
+    }
+
+    async Task HeaderClick(string field)
+    {
+        if (field == SortField)
+        {
+            IsAsc = !IsAsc;
+        }
+        else
+        {
+            SortField = field;
+            IsAsc = false;
+        }
+        await LoadData();
+    }
+
+    int FocusedId;
+
+    void ChartPointClicked(int id)
+    {
+        FocusedId = id;
+        StateHasChanged();
+    }
+
+    string FocusedRowCssClass(int id) => FocusedId == id ? "table-info" : "";
+}
