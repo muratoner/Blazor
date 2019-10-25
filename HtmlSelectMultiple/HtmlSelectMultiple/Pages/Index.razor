@@ -1,0 +1,39 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components
+
+@inject IJSRuntime Js
+
+<label>Html Single Select, Choosed Item: @ChoosedSingleItem</label>
+<select @bind=ChoosedSingleItem>
+    <option>Turkey</option>
+    <option>Azerbaijan</option>
+    <option>Germany</option>
+    <option>Italy</option>
+    <option>France</option>
+</select>
+
+<br />
+<hr />
+
+<label>Html Multiple Select, Choosed Item: @(string.Join(',', ChoosedMultipleItem))</label>
+<select @ref=RefMultipleSelect multiple @onchange=ChangedMultipleSelect>
+    <option>Turkey</option>
+    <option>Azerbaijan</option>
+    <option>Germany</option>
+    <option>Italy</option>
+    <option>France</option>
+</select>
+
+@code {
+    ElementReference RefMultipleSelect;
+
+    public string ChoosedSingleItem { get; set; } = "Italy";
+
+    public IList<string> ChoosedMultipleItem { get; set; } = new List<string>();
+
+    async void ChangedMultipleSelect()
+    {
+        ChoosedMultipleItem = await Js.InvokeAsync<IList<string>>("getSelectedValues", new object[] {RefMultipleSelect});
+        await InvokeAsync(StateHasChanged);
+    }
+}
